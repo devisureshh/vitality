@@ -9,7 +9,7 @@ import 'screens/todo.dart';
 import 'package:vitality/screens/welcome.dart';
 import 'screens/register.dart';
 import 'package:firebase_core/firebase_core.dart';
-
+//MAIN DEVI GITHUB
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
