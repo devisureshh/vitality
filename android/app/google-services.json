@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "106303674339",
+    "project_id": "vitalityfinal",
+    "storage_bucket": "vitalityfinal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106303674339:android:195bff6e8e155cbbc0b2d6",
+        "android_client_info": {
+          "package_name": "devisuresh.vitality"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "106303674339-k7fdcqr5ntaup6ji346o57fr1ovj1li2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYpvu6O1wr_7nxkh751-FAHJvYursUNso"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106303674339-k7fdcqr5ntaup6ji346o57fr1ovj1li2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
