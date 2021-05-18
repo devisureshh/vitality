@@ -56,11 +56,16 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color(0xFF602247),
+          backgroundColor: Colors.transparent,
           toolbarHeight: 50.0,
+          flexibleSpace: Image(
+            image: NetworkImage(
+                'https://www.setaswall.com/wp-content/uploads/2017/06/Blur-Phone-Wallpaper-1080x2340-011-340x550.jpg'),
+            fit: BoxFit.cover,
+          ),
           centerTitle: true,
           title: Text(
-            'VITALITY',
+            'REGISTER',
             style: Theme.of(context).textTheme.headline4,
           )),
       backgroundColor: Colors.white,
@@ -69,10 +74,10 @@ class _RegisterState extends State<Register> {
         decoration: BoxDecoration(
             image: DecorationImage(
           image: NetworkImage(
-              'https://www.fonewalls.com/wp-content/uploads/2019/10/Gradient-Background-Wallpaper-002-300x585.jpg'),
+              'https://www.setaswall.com/wp-content/uploads/2017/06/Blur-Phone-Wallpaper-1080x2340-011-340x550.jpg'),
           fit: BoxFit.cover,
           colorFilter: new ColorFilter.mode(
-              Colors.black.withOpacity(0.7), BlendMode.dstATop),
+              Colors.black.withOpacity(0.65), BlendMode.dstATop),
         )),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),

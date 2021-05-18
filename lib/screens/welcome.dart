@@ -43,8 +43,13 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color(0xFF602247),
+          backgroundColor: Colors.transparent,
           toolbarHeight: 50.0,
+          flexibleSpace: Image(
+            image: NetworkImage(
+                'https://www.setaswall.com/wp-content/uploads/2017/06/Blur-Phone-Wallpaper-1080x2340-011-340x550.jpg'),
+            fit: BoxFit.cover,
+          ),
           centerTitle: true,
           title: Text(
             'VITALITY',
@@ -55,10 +60,10 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
         decoration: BoxDecoration(
             image: DecorationImage(
           image: NetworkImage(
-              'https://www.fonewalls.com/wp-content/uploads/2019/10/Gradient-Background-Wallpaper-002-300x585.jpg'),
+              'https://www.setaswall.com/wp-content/uploads/2017/06/Blur-Phone-Wallpaper-1080x2340-011-340x550.jpg'),
           fit: BoxFit.cover,
           colorFilter: new ColorFilter.mode(
-              Colors.black.withOpacity(0.8), BlendMode.dstATop),
+              Colors.black.withOpacity(0.75), BlendMode.dstATop),
         )),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),

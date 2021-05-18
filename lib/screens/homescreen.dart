@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
-import '../components/biom.dart';
 import 'package:vitality/components/bottomAppBar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:vitality/components/biom.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
-
+  final String docid;
+  final bool isCaretaker;
+  HomeScreen({@required this.docid, @required this.isCaretaker});
   @override
   _HomeScreenState createState() => _HomeScreenState();
+}
+
+_callNumber() async {
+  const number = '8606535166'; //set the number here
+  bool res = await FlutterPhoneDirectCaller.callNumber(number);
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -18,32 +26,23 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     print('got here');
-    print(auth.currentUser.uid);
-    String id = ModalRoute.of(context).settings.arguments;
-    //String docID = auth.currentUser.uid;
     CollectionReference main = FirebaseFirestore.instance.collection('maindb');
-    main.doc(id).get().then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        print('Document exists on the database');
-        //print(documentSnapshot['pulse']);
-        pulse = documentSnapshot['pulse'];
-        temp = documentSnapshot['temperature'];
-      }
-    });
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
-          backgroundColor: Color(0xFF602247),
+          backgroundColor: Colors.transparent,
           toolbarHeight: 50.0,
           centerTitle: true,
           title: Text(
-            'VITALITY',
+            'HEALTH TRACKER',
             style: Theme.of(context).textTheme.headline4,
           )),
       body: Container(
         decoration: BoxDecoration(
             image: DecorationImage(
-          image: NetworkImage('https://wallpaperaccess.com/full/1549296.jpg'),
+          image: NetworkImage(
+              'https://www.setaswall.com/wp-content/uploads/2017/06/Blur-Phone-Wallpaper-1080x2340-011-340x550.jpg'),
           fit: BoxFit.cover,
           colorFilter: new ColorFilter.mode(
               Colors.black.withOpacity(.7), BlendMode.dstATop),
@@ -52,16 +51,49 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text(id),
-              //Text(person['iscare']),
-              biom(image: 'pulse', number: pulse),
-              Text('PULSE', style: Theme.of(context).textTheme.headline1),
-              biom(image: 'temper', number: temp),
-              Text('TEMPERATURE', style: Theme.of(context).textTheme.headline1),
-              SizedBox(height: 20.0),
+              SizedBox(height: 100.0),
+              Text(widget.docid),
+              Text({widget.isCaretaker}.toString()),
+              biom(which: 'pulse', image: 'pulse', docid: widget.docid),
+              RoundBorderText(text: 'PULSE'),
+              biom(which: 'temperature', image: 'temper', docid: widget.docid),
+              RoundBorderText(text: 'TEMPERATURE'),
+              SizedBox(height: 30.0),
+              FlatButton(
+                  child: Text('test call'),
+                  onPressed: () async {
+                    _callNumber();
+                  })
             ]),
       ),
-      bottomNavigationBar: bottomAppBar(id: id),
+      bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+            image: NetworkImage(
+                'https://www.setaswall.com/wp-content/uploads/2017/06/Blur-Phone-Wallpaper-1080x2340-011-340x550.jpg'),
+            fit: BoxFit.cover,
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(1), BlendMode.dstATop),
+          )),
+          child: bottomAppBar(id: widget.docid)),
     );
+  }
+}
+
+class RoundBorderText extends StatelessWidget {
+  final String text;
+  RoundBorderText({this.text});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.only(
+            left: 40.0, right: 40.0, top: 8.0, bottom: 8.0),
+        decoration: BoxDecoration(
+            // border: Border.all(
+            //   color: Colors.black,
+            //   width: 1.0,
+            // ),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        child: Text(text, style: Theme.of(context).textTheme.headline1));
   }
 }

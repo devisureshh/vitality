@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:vitality/screens/homescreen.dart';
+import 'package:vitality/components/ScreenArguments.dart';
 import 'package:vitality/components/button.dart';
 
 bool isCaretaker = false;
@@ -55,11 +55,16 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color(0xFF602247),
+          backgroundColor: Colors.transparent,
           toolbarHeight: 50.0,
+          flexibleSpace: Image(
+            image: NetworkImage(
+                'https://www.setaswall.com/wp-content/uploads/2017/06/Blur-Phone-Wallpaper-1080x2340-011-340x550.jpg'),
+            fit: BoxFit.cover,
+          ),
           centerTitle: true,
           title: Text(
-            'VITALITY',
+            'LOGIN',
             style: Theme.of(context).textTheme.headline4,
           )),
       backgroundColor: Colors.white,
@@ -68,10 +73,10 @@ class _LoginScreenState extends State<LoginScreen> {
         decoration: BoxDecoration(
             image: DecorationImage(
           image: NetworkImage(
-              'https://www.fonewalls.com/wp-content/uploads/2019/10/Gradient-Background-Wallpaper-002-300x585.jpg'),
+              'https://www.setaswall.com/wp-content/uploads/2017/06/Blur-Phone-Wallpaper-1080x2340-011-340x550.jpg'),
           fit: BoxFit.cover,
           colorFilter: new ColorFilter.mode(
-              Colors.black.withOpacity(0.7), BlendMode.dstATop),
+              Colors.black.withOpacity(0.65), BlendMode.dstATop),
         )),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
@@ -105,9 +110,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (docid == null) {
                             print('user does not exist');
                           } else {
-                            //+arguments person = arguments(id :docid,isCare:true);
-                            Navigator.pushNamed(context, HomeScreen.id,
-                                arguments: docid);
+                            isCaretaker = false;
+                            // Navigator.pushNamed(context, HomeScreen.id,
+                            //     arguments: docid, isCaretaker);
+                            Navigator.of(context).pushNamed('home_screen',
+                                arguments: ScreenArguments(
+                                    docid: docid, isCaretaker: isCaretaker));
                           }
                         }),
                     SizedBox(height: 95.0),
@@ -141,8 +149,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               email: caretaker, password: carepass);
                           if (user != null) {
                             isCaretaker = true;
-                            Navigator.pushNamed(context, HomeScreen.id,
-                                arguments: docid);
+                            Navigator.of(context).pushNamed('home_screen',
+                                arguments: ScreenArguments(
+                                    docid: docid, isCaretaker: isCaretaker));
+                            // Navigator.pushNamed(context, HomeScreen.id,
+                            //     arguments: docid);
                           }
                         } catch (e) {
                           print(e);

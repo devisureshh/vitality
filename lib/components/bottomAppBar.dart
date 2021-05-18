@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:vitality/screens/login.dart';
 import 'package:vitality/screens/todo.dart';
 import 'package:vitality/screens/chatbot.dart';
 import 'package:vitality/screens/homescreen.dart';
+import 'package:vitality/components/ScreenArguments.dart';
 
 class bottomAppBar extends StatefulWidget {
   final String id;
@@ -15,7 +17,7 @@ class _bottomAppBarState extends State<bottomAppBar> {
   Widget build(BuildContext context) {
     print('id in bottom is ${widget.id}');
     return BottomAppBar(
-      color: Color(0xFF602247),
+      color: Colors.transparent,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -23,19 +25,27 @@ class _bottomAppBarState extends State<bottomAppBar> {
               icon: Icon(Icons.list),
               color: Colors.white,
               onPressed: () {
-                Navigator.pushNamed(context, Todo.id, arguments: widget.id);
+                print(widget.id);
+                print(isCaretaker.toString());
+                Navigator.of(context).pushNamed('todoscreen',
+                    arguments: ScreenArguments(
+                        docid: widget.id, isCaretaker: isCaretaker));
               }),
           IconButton(
               icon: Icon(Icons.data_usage),
               color: Colors.white,
               onPressed: () {
-                Navigator.pushNamed(context, HomeScreen.id);
+                Navigator.of(context).pushNamed('home_screen',
+                    arguments: ScreenArguments(
+                        docid: widget.id, isCaretaker: isCaretaker));
               }),
           IconButton(
               icon: Icon(Icons.chat),
               color: Colors.white,
               onPressed: () {
-                Navigator.pushNamed(context, ChatBot.id);
+                Navigator.of(context).pushNamed('chat_screen',
+                    arguments: ScreenArguments(
+                        docid: widget.id, isCaretaker: isCaretaker));
               }),
         ],
       ),
