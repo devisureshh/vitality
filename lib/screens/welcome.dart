@@ -5,6 +5,7 @@ import 'package:delayed_display/delayed_display.dart';
 import 'package:vitality/screens/login.dart';
 import 'package:vitality/screens/register.dart';
 import 'package:vitality/components/button.dart';
+import 'package:geocoder/geocoder.dart';
 
 class Welcome extends StatefulWidget {
   @override
@@ -20,7 +21,6 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-
     controller =
         AnimationController(duration: Duration(seconds: 5), vsync: this);
     animation = ColorTween(begin: Colors.black, end: Color(0xff8ab6d6))

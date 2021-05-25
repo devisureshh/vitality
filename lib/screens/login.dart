@@ -18,12 +18,7 @@ class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
 }
 
-// class arguments {
-//   String id;
-//   bool isCare= false;
-//   arguments({this.id,this.isCare})
-//   }
-doesCTExist() async {
+String doesCTExist() {
   print('in does caretaker exist');
   main.where('caretaker', isEqualTo: caretaker).get().then(
         (QuerySnapshot snapshot) => {
@@ -33,9 +28,10 @@ doesCTExist() async {
         },
       );
   print('docid in caretaker function: $docid');
+  return docid;
 }
 
-doesElderlyExist() async {
+String doesElderlyExist() {
   print('in does elderly exist');
   print(elderly);
   main.where('elderly', isEqualTo: elderly).get().then(
@@ -46,6 +42,7 @@ doesElderlyExist() async {
         },
       );
   print('docid in elderly function: $docid');
+  return docid;
 }
 
 class _LoginScreenState extends State<LoginScreen> {
@@ -105,15 +102,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     Button(
                         text: 'LOGIN AS INFIRM ',
                         onPressed: () {
-                          doesElderlyExist();
+                          setState(() {
+                            docid = doesElderlyExist();
+                          });
+
                           print('docid after elderly function call: $docid');
                           if (docid == null) {
                             print('user does not exist');
                           } else {
                             isCaretaker = false;
-                            // Navigator.pushNamed(context, HomeScreen.id,
-                            //     arguments: docid, isCaretaker);
-                            Navigator.of(context).pushNamed('home_screen',
+                            Navigator.of(context).pushNamed('btinit',
                                 arguments: ScreenArguments(
                                     docid: docid, isCaretaker: isCaretaker));
                           }
@@ -143,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       text: 'LOGIN AS CARETAKER',
                       onPressed: () async {
                         try {
-                          doesCTExist();
+                          docid = doesCTExist();
                           print('docid after ct function call: $docid');
                           final user = await _auth.signInWithEmailAndPassword(
                               email: caretaker, password: carepass);
@@ -152,8 +150,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             Navigator.of(context).pushNamed('home_screen',
                                 arguments: ScreenArguments(
                                     docid: docid, isCaretaker: isCaretaker));
-                            // Navigator.pushNamed(context, HomeScreen.id,
-                            //     arguments: docid);
                           }
                         } catch (e) {
                           print(e);

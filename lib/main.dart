@@ -1,8 +1,9 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:vitality/screens/welcome.dart';
+import 'package:vitality/screens/btInitialize.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:vitality/screens/welcome.dart';
 import 'package:vitality/components/route.dart';
 
 void main() async {
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
           headline2: TextStyle(
               fontSize: 60.0, fontFamily: 'CrimsonText', color: Colors.black),
           headline3: TextStyle(
-              fontSize: 30.0, fontFamily: 'Lora', color: Colors.white),
+              fontSize: 20.0, fontFamily: 'Montserrat', color: Colors.black),
           headline4: TextStyle(
               fontSize: 30.0, fontFamily: 'Montserrat', color: Colors.white),
           headline5: TextStyle(

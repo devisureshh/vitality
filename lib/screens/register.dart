@@ -4,31 +4,40 @@ import 'package:delayed_display/delayed_display.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vitality/components/button.dart';
-import 'package:vitality/screens/homescreen.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:vitality/screens/login.dart';
 import 'dart:async';
 
 final auth = FirebaseAuth.instance;
 String elderly;
+int phone;
 String caretaker;
 String carepass;
+String carepass2;
+String address;
+int radius;
 var docid;
+List<int> radiuses = [1, 2, 3, 5, 7, 10, 15, 20]; // Option 2
+int selectedradius;
 CollectionReference main = FirebaseFirestore.instance.collection('maindb');
 
-// void aStream() async {
-//   await for (var snapshot
-//       in FirebaseFirestore.instance.collection('maindb').snapshots()) {
-//     for(var message in snapshot.documents){
-//       print(message.elderly)
-//     }
-//   }
-// }
-
 Future<void> addData(uid) async {
+  var addresses = await Geocoder.local.findAddressesFromQuery(address);
+  var first = addresses.first;
+  print(addresses.first.coordinates.latitude);
+  print(addresses.first.coordinates.longitude);
+  double lat = first.coordinates.latitude;
+  double long = first.coordinates.longitude;
+
   Map<String, dynamic> data = {
     'caretaker': caretaker,
     'elderly': elderly,
     'pulse': 66,
-    'temperature': 99
+    'temperature': 32,
+    'lat': lat,
+    'longitude': long,
+    'radius': selectedradius,
+    'phone': phone
   };
   await main.doc(uid).set(data);
 }
@@ -89,25 +98,25 @@ class _RegisterState extends State<Register> {
                 DelayedDisplay(
                   delay: Duration(seconds: 1),
                   child: Column(children: <Widget>[
-                    SizedBox(height: 85.0),
-                    Text('INFIRM SETUP',
+                    SizedBox(height: 55.0),
+                    Text('INFIRM',
                         textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 20.0)),
+                        style: Theme.of(context).textTheme.headline3),
                     SizedBox(height: 15.0),
                     Text('USERNAME',
-                        style: Theme.of(context).textTheme.headline1),
+                        style: Theme.of(context).textTheme.headline3),
                     TextField(
                       onChanged: (value) {
                         elderly = value;
                       },
                     ),
                     SizedBox(height: 75.0),
-                    Text('CARETAKER SETUP',
+                    Text('CARETAKER',
                         textAlign: TextAlign.left,
                         style: TextStyle(fontSize: 20.0)),
                     SizedBox(height: 15.0),
                     Text('USERNAME',
-                        style: Theme.of(context).textTheme.headline1),
+                        style: Theme.of(context).textTheme.headline3),
                     TextField(
                       onChanged: (value) {
                         caretaker = value;
@@ -115,20 +124,57 @@ class _RegisterState extends State<Register> {
                     ),
                     SizedBox(height: 15.0),
                     Text('PASSWORD',
-                        style: Theme.of(context).textTheme.headline1),
+                        style: Theme.of(context).textTheme.headline3),
                     TextField(
+                      obscureText: true,
                       onChanged: (value) {
                         carepass = value;
                       },
                     ),
                     SizedBox(height: 15.0),
                     Text('CONFIRM PASSWORD',
-                        style: Theme.of(context).textTheme.headline1),
+                        style: Theme.of(context).textTheme.headline3),
                     TextField(
+                      obscureText: true,
                       onChanged: (value) {
-                        carepass = value;
+                        carepass2 = value;
                       },
                     ),
+                    SizedBox(height: 15.0),
+                    Text('PHONE NUMBER',
+                        style: Theme.of(context).textTheme.headline3),
+                    TextField(
+                      onChanged: (value) {
+                        phone = int.parse(value);
+                      },
+                    ),
+                    SizedBox(height: 15),
+                    Text('HOME ADDRESS',
+                        style: Theme.of(context).textTheme.headline3),
+                    TextField(
+                      onChanged: (value) {
+                        address = value;
+                      },
+                    ),
+                    SizedBox(height: 15.0),
+                    Text('RADIUS',
+                        style: Theme.of(context).textTheme.headline3),
+                    DropdownButton(
+                      hint: Text('Please choose a radius'),
+                      value: selectedradius,
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedradius = newValue;
+                        });
+                      },
+                      items: radiuses.map((radius) {
+                        return DropdownMenuItem(
+                          child: new Text(radius.toString()),
+                          value: radius,
+                        );
+                      }).toList(),
+                    ),
+                    SizedBox(height: 20.0),
                     SizedBox(height: 55.0),
                     ConstrainedBox(
                       constraints:
@@ -136,13 +182,29 @@ class _RegisterState extends State<Register> {
                       child: Button(
                         text: 'REGISTER',
                         onPressed: () async {
-                          try {
-                            final newUser =
-                                await auth.createUserWithEmailAndPassword(
-                                    email: caretaker, password: carepass);
-                            addData(auth.currentUser.uid);
-                          } catch (e) {
-                            print(e);
+                          if (carepass == carepass2) {
+                            try {
+                              final newUser =
+                                  await auth.createUserWithEmailAndPassword(
+                                      email: caretaker, password: carepass);
+                              addData(auth.currentUser.uid);
+                            } catch (e) {
+                              print(e);
+                            }
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  Future.delayed(Duration(seconds: 2), () {
+                                    Navigator.of(context).pop(true);
+                                  });
+                                  return AlertDialog(
+                                    title: Text('PASSWORDS DO NOT MATCH',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline3),
+                                  );
+                                });
                           }
                         },
                       ),
@@ -152,13 +214,12 @@ class _RegisterState extends State<Register> {
                       constraints:
                           BoxConstraints.tightFor(width: 200.0, height: 40),
                       child: Button(
-                          text: 'ENTER APP',
+                          text: 'GO TO LOGIN',
                           onPressed: () async {
                             await doesElderlyExist();
                             print('docid:$docid');
                             if (docid != null) {
-                              Navigator.pushNamed(context, HomeScreen.id,
-                                  arguments: docid);
+                              Navigator.pushNamed(context, LoginScreen.id);
                             }
                           }),
                     ),

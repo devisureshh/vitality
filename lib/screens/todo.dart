@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:vitality/components/bottomAppBar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:vitality/components/button.dart';
 import 'package:vitality/screens/login.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 bool temp;
 var todoid;
@@ -14,12 +14,13 @@ Stream collectionStream =
     FirebaseFirestore.instance.collection('todo').snapshots();
 CollectionReference main = FirebaseFirestore.instance.collection('maindb');
 CollectionReference todo = FirebaseFirestore.instance.collection('todo');
-final myController = TextEditingController();
+TextEditingController myController = TextEditingController();
 
 class Todo extends StatefulWidget {
   final String docid;
   final bool isCaretaker;
-  Todo({this.docid, this.isCaretaker});
+  final BluetoothDevice currentDevice;
+  Todo({this.docid, this.isCaretaker, this.currentDevice});
   @override
   _TodoState createState() => _TodoState();
   static const String id = 'todoscreen';
@@ -63,6 +64,42 @@ Future<void> invertDone(String task) async {
       );
 }
 
+deleteTask(context, String task) {
+  Alert(
+      context: context,
+      title: "DELETE TASK?",
+      style: AlertStyle(titleStyle: Theme.of(context).textTheme.headline1),
+      buttons: [
+        DialogButton(
+          color: Colors.blue.shade200,
+          onPressed: () {
+            print('delete pressed');
+            todo
+                .where('task', isEqualTo: task)
+                .get()
+                .then((QuerySnapshot snapshot) => {
+                      snapshot.docs.forEach((f) {
+                        todoid = f.reference.id;
+                        print('todoid found is $todoid');
+                        todo
+                            .doc(todoid)
+                            .delete()
+                            .then((value) => print("TAsk Deleted"))
+                            .catchError((error) =>
+                                print("Failed to delete task: $error"));
+                      })
+                    });
+            Navigator.pop(context);
+            myController.clear();
+          },
+          child: Text(
+            "DELETE",
+            style: Theme.of(context).textTheme.headline1,
+          ),
+        )
+      ]).show();
+}
+
 _openPopup(context) {
   Alert(
       context: context,
@@ -96,12 +133,11 @@ _openPopup(context) {
 }
 
 class _TodoState extends State<Todo> {
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   myController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -167,6 +203,7 @@ class _TodoState extends State<Todo> {
                           onChanged: isCaretaker
                               ? (bool value) {
                                   print('do u want to delete ');
+                                  deleteTask(context, task['task']);
                                 }
                               : (bool value) {
                                   print('initially checked is $_checked');
@@ -185,16 +222,7 @@ class _TodoState extends State<Todo> {
               );
             },
           ),
-        )
-        // Center(
-        //   child: Column(
-        //     children: <Widget>[
-        //       Text(widget.docid),
-        //       Text(widget.isCaretaker.toString()),
-        //     ],
-        //   ),
-        // ),
-        ,
+        ),
         bottomNavigationBar: Container(
             decoration: BoxDecoration(
                 image: DecorationImage(
@@ -204,6 +232,7 @@ class _TodoState extends State<Todo> {
               colorFilter: new ColorFilter.mode(
                   Colors.black.withOpacity(1), BlendMode.dstATop),
             )),
-            child: bottomAppBar(id: widget.docid)));
+            child: bottomAppBar(
+                id: widget.docid, currentDevice: widget.currentDevice)));
   }
 }

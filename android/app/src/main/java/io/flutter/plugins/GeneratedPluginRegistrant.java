@@ -18,7 +18,11 @@ public final class GeneratedPluginRegistrant {
     flutterEngine.getPlugins().add(new io.flutter.plugins.firebase.firestore.FlutterFirebaseFirestorePlugin());
     flutterEngine.getPlugins().add(new io.flutter.plugins.firebase.auth.FlutterFirebaseAuthPlugin());
     flutterEngine.getPlugins().add(new io.flutter.plugins.firebase.core.FlutterFirebaseCorePlugin());
+      io.github.edufolly.flutterbluetoothserial.FlutterBluetoothSerialPlugin.registerWith(shimPluginRegistry.registrarFor("io.github.edufolly.flutterbluetoothserial.FlutterBluetoothSerialPlugin"));
       com.yanisalfian.flutterphonedirectcaller.FlutterPhoneDirectCallerPlugin.registerWith(shimPluginRegistry.registrarFor("com.yanisalfian.flutterphonedirectcaller.FlutterPhoneDirectCallerPlugin"));
+      com.aloisdeniel.geocoder.GeocoderPlugin.registerWith(shimPluginRegistry.registrarFor("com.aloisdeniel.geocoder.GeocoderPlugin"));
+    flutterEngine.getPlugins().add(new com.baseflow.geocoding.GeocodingPlugin());
+    flutterEngine.getPlugins().add(new com.baseflow.geolocator.GeolocatorPlugin());
     flutterEngine.getPlugins().add(new io.flutter.plugins.urllauncher.UrlLauncherPlugin());
   }
 }

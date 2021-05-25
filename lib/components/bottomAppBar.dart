@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:vitality/screens/login.dart';
-import 'package:vitality/screens/todo.dart';
-import 'package:vitality/screens/chatbot.dart';
-import 'package:vitality/screens/homescreen.dart';
 import 'package:vitality/components/ScreenArguments.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class bottomAppBar extends StatefulWidget {
+  final BluetoothDevice currentDevice;
   final String id;
-  bottomAppBar({this.id});
+  bottomAppBar({this.id, this.currentDevice});
   @override
   _bottomAppBarState createState() => _bottomAppBarState();
 }
@@ -25,11 +24,14 @@ class _bottomAppBarState extends State<bottomAppBar> {
               icon: Icon(Icons.list),
               color: Colors.white,
               onPressed: () {
-                print(widget.id);
+                print('to do pressed');
+                print(docid);
                 print(isCaretaker.toString());
                 Navigator.of(context).pushNamed('todoscreen',
                     arguments: ScreenArguments(
-                        docid: widget.id, isCaretaker: isCaretaker));
+                        docid: docid,
+                        isCaretaker: isCaretaker,
+                        currentDevice: widget.currentDevice));
               }),
           IconButton(
               icon: Icon(Icons.data_usage),
@@ -37,7 +39,9 @@ class _bottomAppBarState extends State<bottomAppBar> {
               onPressed: () {
                 Navigator.of(context).pushNamed('home_screen',
                     arguments: ScreenArguments(
-                        docid: widget.id, isCaretaker: isCaretaker));
+                        docid: widget.id,
+                        isCaretaker: isCaretaker,
+                        currentDevice: widget.currentDevice));
               }),
           IconButton(
               icon: Icon(Icons.chat),
@@ -45,7 +49,9 @@ class _bottomAppBarState extends State<bottomAppBar> {
               onPressed: () {
                 Navigator.of(context).pushNamed('chat_screen',
                     arguments: ScreenArguments(
-                        docid: widget.id, isCaretaker: isCaretaker));
+                        docid: widget.id,
+                        isCaretaker: isCaretaker,
+                        currentDevice: widget.currentDevice));
               }),
         ],
       ),

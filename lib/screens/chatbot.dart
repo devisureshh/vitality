@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:vitality/components/bottomAppBar.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 class ChatBot extends StatefulWidget {
+  final BluetoothDevice currentDevice;
   final String docid;
   final bool isCaretaker;
-  ChatBot({this.docid, this.isCaretaker});
+
+  ChatBot({this.docid, this.isCaretaker, this.currentDevice});
   @override
   _ChatBotState createState() => _ChatBotState();
   static const String id = 'chat_screen';
@@ -46,7 +49,8 @@ class _ChatBotState extends State<ChatBot> {
             colorFilter: new ColorFilter.mode(
                 Colors.black.withOpacity(1), BlendMode.dstATop),
           )),
-          child: bottomAppBar(id: widget.docid),
+          child: bottomAppBar(
+              id: widget.docid, currentDevice: widget.currentDevice),
         ));
   }
 }
